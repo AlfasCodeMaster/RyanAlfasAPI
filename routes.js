@@ -127,5 +127,38 @@ router.post('/addEntry',async (req, res) => {
       res.status(500).json({ error: 'Failed to update data' });
     }
   });
+  router.post('/changeRGB', async (req, res) => {
+    try {
+      // Retrieve temperature and time from the request body
+      const { red,green,blue } = req.body;
+  
+      if(!!red||!green||!blue){
+          return res.json({error:"Light ID and state must be included."})
+      }
+      // Create a data object using the temperature and time
+      const search = {
+        "lightID":4
+      };
+      const updateForm = { "$set": {
+         "red": red,
+         "green": green,
+         "blue": blue,
+        } }
+  
+      // Connect to MongoDB
+      const db = await connect();
+  
+      // Access the collection
+      const lightRoom = db.collection('lightRoom');
+      lightRoom.updateOne(search,updateForm)
+
+  
+      // Send a success response
+      res.json({ message: 'RGB state updated successfully.' });
+    } catch (error) {
+      console.error('Failed to update data', error);
+      res.status(500).json({ error: 'Failed to update data' });
+    }
+  });
 
 module.exports = router;
