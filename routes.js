@@ -170,7 +170,7 @@ router.post('/addEntry',async (req, res) => {
       const collection = db.collection('lightRoom');
   
       // Retrieve data from the collection
-      const lightEntries = await collection.find().sort({ lightID: -1 }).limit(10).toArray();
+      const lightEntries = await collection.find().sort({ lightID: 1 }).limit(10).toArray();
   
       // Send the response
       res.json(lightEntries);
