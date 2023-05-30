@@ -132,7 +132,7 @@ router.post('/addEntry',async (req, res) => {
       // Retrieve temperature and time from the request body
       const { red,green,blue } = req.body;
   
-      if(!!red||!green||!blue){
+      if(red==null||green==null||blue==null){
           return res.json({error:"Light ID and state must be included."})
       }
       // Create a data object using the temperature and time
@@ -158,6 +158,25 @@ router.post('/addEntry',async (req, res) => {
     } catch (error) {
       console.error('Failed to update data', error);
       res.status(500).json({ error: 'Failed to update data' });
+    }
+  });
+
+  router.get('/getLights', async (req, res) => {
+    try {
+      // Connect to MongoDB
+      const db = await connect();
+  
+      // Access a collection
+      const collection = db.collection('lightRoom');
+  
+      // Retrieve data from the collection
+      const lightEntries = await collection.find().sort({ lightID: -1 }).limit(10).toArray();
+  
+      // Send the response
+      res.json(lightEntries);
+    } catch (err) {
+      console.error('Failed to retrieve light values', err);
+      res.status(500).json({ error: 'Failed to retrieve light values' });
     }
   });
 
