@@ -1,5 +1,6 @@
 const express = require('express');
 const connect = require('./db');
+const { serialize } = require('mongodb');
 
 const router = express.Router();
 
@@ -92,6 +93,38 @@ router.post('/addEntry',async (req, res) => {
     } catch (err) {
       console.error('Failed to retrieve humidity entries', err);
       res.status(500).json({ error: 'Failed to retrieve humidity entries' });
+    }
+  });
+
+  router.post('/changeLight', async (req, res) => {
+    try {
+      // Retrieve temperature and time from the request body
+      const { lightID,state } = req.body;
+  
+      if(!lightID||!state){
+          return res.json({error:"Light ID and state must be included."})
+      }
+      // Create a data object using the temperature and time
+      const search = {
+        "lightID":lightID
+      };
+      const updateForm = { "$set": {
+         "state": state 
+        } }
+  
+      // Connect to MongoDB
+      const db = await connect();
+  
+      // Access the collection
+      const lightRoom = db.collection('lightRoom');
+      lightRoom.updateOne(search,updateForm)
+
+  
+      // Send a success response
+      res.json({ message: 'Light state updated successfully.' });
+    } catch (error) {
+      console.error('Failed to update data', error);
+      res.status(500).json({ error: 'Failed to update data' });
     }
   });
 
