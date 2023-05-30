@@ -101,7 +101,7 @@ router.post('/addEntry',async (req, res) => {
       // Retrieve temperature and time from the request body
       const { lightID,state } = req.body;
   
-      if(!lightID||!state){
+      if(!lightID||state==null){
           return res.json({error:"Light ID and state must be included."})
       }
       // Create a data object using the temperature and time
