@@ -130,9 +130,9 @@ router.post('/addEntry',async (req, res) => {
   router.post('/changeRGB', async (req, res) => {
     try {
       // Retrieve temperature and time from the request body
-      const { red,green,blue } = req.body;
+      const { value } = req.body;
   
-      if(red==null||green==null||blue==null){
+      if(value==null){
           return res.json({error:"Light ID and state must be included."})
       }
       // Create a data object using the temperature and time
@@ -140,9 +140,7 @@ router.post('/addEntry',async (req, res) => {
         "lightID":4
       };
       const updateForm = { "$set": {
-         "red": red,
-         "green": green,
-         "blue": blue,
+         "value": value
         } }
   
       // Connect to MongoDB
