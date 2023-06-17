@@ -76,26 +76,6 @@ router.post('/addEntry',async (req, res) => {
       }
   });
 
-
-  router.get('/getHumidities', async (req, res) => {
-    try {
-      // Connect to MongoDB
-      const db = await connect();
-  
-      // Access a collection
-      const collection = db.collection('humidity');
-  
-      // Retrieve data from the collection
-      const humidityEntries = await collection.find().sort({ _id: -1 }).limit(10).toArray();
-  
-      // Send the response
-      res.json(humidityEntries);
-    } catch (err) {
-      console.error('Failed to retrieve humidity entries', err);
-      res.status(500).json({ error: 'Failed to retrieve humidity entries' });
-    }
-  });
-
   router.post('/changeLight', async (req, res) => {
     try {
       // Retrieve temperature and time from the request body
@@ -127,13 +107,13 @@ router.post('/addEntry',async (req, res) => {
       res.status(500).json({ error: 'Failed to update data' });
     }
   });
-  router.post('/changeRGB', async (req, res) => {
+  router.post('/changeAdjust', async (req, res) => {
     try {
       // Retrieve temperature and time from the request body
       const { value } = req.body;
   
       if(value==null){
-          return res.json({error:"Light ID and state must be included."})
+          return res.json({error:"Adjustable light value must be included."})
       }
       // Create a data object using the temperature and time
       const search = {
@@ -152,7 +132,7 @@ router.post('/addEntry',async (req, res) => {
 
   
       // Send a success response
-      res.json({ message: 'RGB state updated successfully.' });
+      res.json({ message: 'Adjustable light value updated successfully.' });
     } catch (error) {
       console.error('Failed to update data', error);
       res.status(500).json({ error: 'Failed to update data' });
